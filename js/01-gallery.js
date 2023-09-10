@@ -9,7 +9,7 @@ const textImg = galleryItems
   .map(
     (obj) =>
       `<li class="gallery__item">
-<a class="gallery__link" href="large-image.jpg">
+<a class="gallery__link" href="${obj.original}">
     <img
       class="gallery__image"
       src="${obj.preview}"
@@ -41,35 +41,41 @@ function handleClick(event) {
       currentProduct.querySelector(".gallery__image").dataset.source
   );
 
-  const instance = basicLightbox.create(`
+  const instance = basicLightbox.create(
+    `
   <div class="modal">
   <img
       class="gallery__image"
       src="${imgItem.original}"
       alt="${imgItem.description}"
     />
-  </div>
-  `);
+  </div>`,
+    {
+      onShow: () => {
+        document.addEventListener("keydown", keyEvent);
+      },
+      onClose: () => {
+        document.removeEventListener("keydown", keyEvent);
+      },
+    }
+  );
 
   instance.show();
 
-  const keyEvent = (e) => {
-    if (event.code !== "Escape") {
-      return;
+  function keyEvent(event) {
+    if (event.code === "Escape") {
+      instance.close();
     }
-    instance.close();
-  };
+  }
 
-  document.addEventListener("keydown", (event) => {
-    if (event.code !== "Escape") {
-      return;
-    }
-    instance.close();
-  });
-  document.removeEventListener("keydown", (event) => {
-    if (event.code !== "Escape") {
-      return;
-    }
-    instance.close();
-  });
+  // const keyEvent = (e) => {
+  //   if (e.code !== "Escape") {
+  //     return;
+  //   }
+  //   instance.close();
+  //   console.log("HELLO");
+  //   document.removeEventListener("keydown", keyEvent);
+  // };
+
+  // document.addEventListener("keydown", keyEvent);
 }
